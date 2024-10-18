@@ -1,0 +1,25 @@
+[package]
+name = "calculadora_construcao"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Dependências com as versões mais recentes disponíveis
+eframe = { version = "^0.23", features = ["default_fonts", "glow"] }
+egui = "^0.23"
+rust_decimal = "^1.36"
+rust_decimal_macros = "^1.36"
+meval = { version = "^0.2", optional = true } # Pode considerar remover ou substituir por outra alternativa como evalexpr
+serde = { version = "^1.0", features = ["derive"] }
+confy = "^0.5"
+serde_json = "^1.0" # Adicionei caso precise de suporte JSON com serde
+self_update = "^0.41"
+
+# Dependências específicas para Windows
+[target.'cfg(windows)'.dependencies.winapi]
+version = "^0.3.9"
+features = ["winuser", "libloaderapi", "errhandlingapi", "shellapi"]
+
+[[bin]]
+name = "calculadora_construcao"
+path = "src/main.rs"
