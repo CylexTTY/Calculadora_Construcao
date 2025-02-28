@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Construção</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #6B8AE7;
+            --primary-light: #9EB4F1;
+            --primary-dark: #4A6AD7;
+            --secondary-color: #F6C28B;
+            --accent-color: #E5A2A2;
+            --background-color: #F5F7FA;
+            --card-color: #FFFFFF;
+            --text-color: #2C3E50;
+            --border-color: #E2E8F0;
+            --success-color: #68D391;
+            --error-color: #FC8181;
+            --border-radius: 10px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--card-color);
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .reset-button {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .reset-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+        }
+
+        aside {
+            width: 250px;
+            background-color: var(--card-color);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+
+        aside h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.25rem;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .menu-item:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .menu-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+        }
+
+        .card {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        
+        .form-control-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-control-inline > * {
+            margin-right: 0.5rem;
+        }
+        
+        .form-control-inline label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(107, 138, 231, 0.2);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .radio-item input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-right: 1.5rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-right: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-add {
+            background-color: var(--success-color);
+        }
+
+        .btn-add:hover {
+            background-color: #48BB78;
+        }
+
+        .btn-remove {
+            background-color: var(--error-color);
+        }
+
+        .btn-remove:hover {
+            background-color: #E53E3E;
+        }
+
+        .btn-group {
+            display: flex;
+            margin-top: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media (max-width: 768px) {
+            .grid, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 1rem;
+            }
+            
+            .container {
+                flex-direction: column;
+            }
+            
+            aside {
+                width: 100%;
+                padding: 1rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            
+            .menu-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+            
+            .menu-item {
+                flex: 1 1 auto;
+                min-width: 120px;
+                text-align: center;
+                margin: 0.25rem;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+            
+            .btn-group {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .btn {
+                margin-right: 0;
+                flex: 1 1 auto;
+                min-width: 120px;
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+            
+            .form-control-inline {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .form-control-inline > * {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .calc-buttons {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+            }
+            
+            .calc-btn {
+                padding: 0.75rem;
+                font-size: 1rem;
+            }
+        }
+
+        .ambiente {
+            background-color: rgba(107, 138, 231, 0.1);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .ambiente h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .resultado {
+            background-color: #2C3E50;
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .resultado-titulo {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+        
+        .resultado-secao {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+        
+        .resultado-secao:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .resultado-destaque {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+        
+        .resultado-total {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        /* Calculadora Básica */
+        .calc-display {
+            background-color: var(--text-color);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            text-align: right;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: monospace;
+        }
+
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calc-btn {
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calc-btn:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .calc-btn.operator {
+            background-color: var(--secondary-color);
+        }
+
+        .calc-btn.action {
+            background-color: var(--accent-color);
+        }
+
+        .calc-history {
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .calc-history p {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background-color: rgba(107, 138, 231, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+
+        .tooltip i {
+            color: var(--primary-color);
+            cursor: help;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--text-color);
+            color: white;
+            text-align: center;
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-tools"></i> Calculadora de Construção</h1>
+        <button id="resetarValores" class="reset-button"><i class="fas fa-undo"></i> Resetar Valores Padrão</button>
+    </header>
+
+    <div class="container">
+        <aside>
+            <h2>Menu</h2>
+            <div class="menu-container">
+                <div id="menu-laje" class="menu-item active">
+                    <i class="fas fa-th"></i> Calculadora de Laje
+                </div>
+                <div id="menu-piso" class="menu-item">
+                    <i class="fas fa-border-all"></i> Calculadora de Piso
+                </div>
+                <div id="menu-forro" class="menu-item">
+                    <i class="fas fa-grip-lines"></i> Calculadora de Forro
+                </div>
+                <div id="menu-materiais" class="menu-item">
+                    <i class="fas fa-cubes"></i> Calculadora de Materiais
+                </div>
+                <div id="menu-basica" class="menu-item">
+                    <i class="fas fa-calculator"></i> Calculadora Básica
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <!-- CALCULADORA DE LAJE -->
+            <section id="laje" class="section active">
+                <h2><i class="fas fa-th"></i> Calculadora de Laje</h2>
+                
+                <div class="card">
+                    <div class="form-group">
+                        <label>Tipo de Laje:</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="laje-trelica" name="tipo-laje" value="trelica" checked>
+                                <label for="laje-trelica">Treliça</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="laje-isopor" name="tipo-laje" value="isopor">
+                                <label for="laje-isopor">Isopor</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="laje-ambientes-container">
+                        <!-- Ambientes serão adicionados aqui dinamicamente -->
+                        <div class="ambiente" data-index="0">
+                            <h3>Ambiente 1:</h3>
+                            <div class="grid">
+                                <div class="form-group">
+                                    <label>Largura (m):</label>
+                                    <input type="text" class="laje-largura" placeholder="Ex: 3.5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Comprimento (m):</label>
+                                    <input type="text" class="laje-comprimento" placeholder="Ex: 4.0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Direção de Instalação:</label>
+                                <div class="radio-group">
+                                    <div class="radio-item">
+                                        <input type="radio" id="laje-direcao-menor-0" name="laje-direcao-0" value="menor" checked>
+                                        <label for="laje-direcao-menor-0">Menor Lado</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="laje-direcao-maior-0" name="laje-direcao-0" value="maior">
+                                        <label for="laje-direcao-maior-0">Maior Lado</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-remove remover-ambiente" style="display: none;"><i class="fas fa-trash"></i> Remover Ambiente</button>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="adicionar-ambiente-laje" class="btn btn-add"><i class="fas fa-plus"></i> Adicionar Ambiente</button>
+                        <button id="calcular-laje" class="btn"><i class="fas fa-calculator"></i> Calcular Laje</button>
+                        <button id="resetar-laje" class="btn"><i class="fas fa-undo"></i> Resetar Valores</button>
+                    </div>
+                </div>
+
+                <div id="resultado-laje" class="resultado" style="display: none;"></div>
+            </section>
+
+            <!-- CALCULADORA DE PISO -->
+            <section id="piso" class="section">
+                <h2><i class="fas fa-border-all"></i> Calculadora de Piso</h2>
+                
+                <div class="card">
+                    <div class="form-group">
+                        <label>Opções de Cálculo:</label>
+                        <div style="display: flex;">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="calcular-piso" checked>
+                                <label for="calcular-piso">Calcular Piso</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="calcular-argamassa">
+                                <label for="calcular-argamassa">Calcular Argamassa</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="calcular-rejunte">
+                                <label for="calcular-rejunte">Calcular Rejunte</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="piso-ambientes-container">
+                        <!-- Ambientes serão adicionados aqui dinamicamente -->
+                        <div class="ambiente" data-index="0">
+                            <h3>Ambiente 1:</h3>
+                            <div class="grid">
+                                <div class="form-group">
+                                    <label>Largura (m):</label>
+                                    <input type="text" class="piso-largura" placeholder="Ex: 3.5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Comprimento (m):</label>
+                                    <input type="text" class="piso-comprimento" placeholder="Ex: 4.0">
+                                </div>
+                            </div>
+                            <button class="btn btn-remove remover-ambiente" style="display: none;"><i class="fas fa-trash"></i> Remover Ambiente</button>
+                        </div>
+                    </div>
+
+                    <button id="adicionar-ambiente-piso" class="btn btn-add"><i class="fas fa-plus"></i> Adicionar Ambiente</button>
+
+                    <!-- Campos específicos para cada cálculo -->
+                    <div id="opcoes-piso" style="margin-top: 1.5rem;">
+                        <div id="campo-area-caixa" class="form-group">
+                            <label>Área da caixa (m²):</label>
+                            <input type="text" id="area-caixa" placeholder="Ex: 1.5">
+                        </div>
+
+                        <div id="campos-argamassa" style="display: none;">
+                            <div class="form-group">
+                                <label>Método de aplicação da argamassa:</label>
+                                <div class="radio-group">
+                                    <div class="radio-item">
+                                        <input type="radio" id="argamassa-simples" name="metodo-argamassa" value="simples" checked>
+                                        <label for="argamassa-simples">Aplicação Simples</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="argamassa-dupla" name="metodo-argamassa" value="dupla">
+                                        <label for="argamassa-dupla">Colagem Dupla</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Fator de Argamassa (kg/m²):
+                                    <div class="tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-text">Ajuste o fator de consumo de argamassa.</span>
+                                    </div>
+                                </label>
+                                <div class="form-control-inline">
+                                    <input type="text" id="argamassa-fator" placeholder="Ex: 5.0" value="5.0" style="flex: 1;">
+                                    <button id="salvar-fator-argamassa" class="btn"><i class="fas fa-save"></i> Salvar como Valor Padrão</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="campos-rejunte" style="display: none;">
+                            <h3>Dados do Revestimento para o Rejunte:</h3>
+                            <div class="grid">
+                                <div class="form-group">
+                                    <label>Largura do Revestimento (mm):</label>
+                                    <input type="text" id="rejunte-largura" placeholder="Ex: 300">
+                                </div>
+                                <div class="form-group">
+                                    <label>Comprimento do Revestimento (mm):</label>
+                                    <input type="text" id="rejunte-comprimento" placeholder="Ex: 300">
+                                </div>
+                                <div class="form-group">
+                                    <label>Espessura do Revestimento (mm):</label>
+                                    <input type="text" id="rejunte-espessura" placeholder="Ex: 3" value="3">
+                                </div>
+                                <div class="form-group">
+                                    <label>Espaçamento das Juntas (mm):</label>
+                                    <input type="text" id="rejunte-juntas" placeholder="Ex: 2" value="2">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Coeficiente de Rejunte:
+                                    <div class="tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-text">
+                                            Coeficiente de Rejunte é usado na fórmula:
+                                            kg/m² = ((L + C) x E x J x Coeficiente) / (L x C)<br>
+                                            Onde:<br>
+                                            L = Largura do revestimento (mm)<br>
+                                            C = Comprimento do revestimento (mm)<br>
+                                            E = Espessura do revestimento (mm)<br>
+                                            J = Espaçamento das juntas (mm)
+                                        </span>
+                                    </div>
+                                </label>
+                                <div class="form-control-inline">
+                                    <input type="text" id="rejunte-coeficiente" placeholder="Ex: 1.58" value="1.58" style="flex: 1;">
+                                    <button id="salvar-coeficiente-rejunte" class="btn"><i class="fas fa-save"></i> Salvar como Valor Padrão</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="calcular-piso-btn" class="btn"><i class="fas fa-calculator"></i> Calcular</button>
+                        <button id="resetar-piso" class="btn"><i class="fas fa-undo"></i> Resetar Valores</button>
+                    </div>
+                </div>
+
+                <div id="resultado-piso" class="resultado" style="display: none;"></div>
+            </section>
+
+            <!-- CALCULADORA DE FORRO -->
+            <section id="forro" class="section">
+                <h2><i class="fas fa-grip-lines"></i> Calculadora de Forro de PVC</h2>
+                
+                <div class="card">
+                    <div class="form-group">
+                        <label>Direção de Instalação Global:</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="forro-direcao-maior" name="forro-direcao-global" value="maior" checked>
+                                <label for="forro-direcao-maior">Maior Lado</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="forro-direcao-menor" name="forro-direcao-global" value="menor">
+                                <label for="forro-direcao-menor">Menor Lado</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="forro-ambientes-container">
+                        <!-- Ambientes serão adicionados aqui dinamicamente -->
+                        <div class="ambiente" data-index="0">
+                            <h3>Ambiente 1:</h3>
+                            <div class="grid">
+                                <div class="form-group">
+                                    <label>Largura (m):</label>
+                                    <input type="text" class="forro-largura" placeholder="Ex: 3.5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Comprimento (m):</label>
+                                    <input type="text" class="forro-comprimento" placeholder="Ex: 4.0">
+                                </div>
+                            </div>
+                            <button class="btn btn-remove remover-ambiente" style="display: none;"><i class="fas fa-trash"></i> Remover Ambiente</button>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="adicionar-ambiente-forro" class="btn btn-add"><i class="fas fa-plus"></i> Adicionar Ambiente</button>
+                        <button id="calcular-forro" class="btn"><i class="fas fa-calculator"></i> Calcular Forro</button>
+                        <button id="resetar-forro" class="btn"><i class="fas fa-undo"></i> Resetar Valores</button>
+                    </div>
+                </div>
+
+                <div id="resultado-forro" class="resultado" style="display: none;"></div>
+            </section>
+
+            <!-- CALCULADORA DE MATERIAIS -->
+            <section id="materiais" class="section">
+                <h2><i class="fas fa-cubes"></i> Calculadora de Materiais</h2>
+                
+                <div class="card">
+                    <div class="form-group">
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="materiais-volume" name="modo-entrada-materiais" value="volume" checked>
+                                <label for="materiais-volume">Por Volume de Concreto</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="materiais-quantidade" name="modo-entrada-materiais" value="quantidade">
+                                <label for="materiais-quantidade">Por Quantidade de Materiais</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="campos-materiais-volume">
+                        <div class="form-group">
+                            <label>Volume de Concreto (m³):</label>
+                            <input type="text" id="volume-concreto" placeholder="Ex: 1.0">
+                        </div>
+                    </div>
+
+                    <div id="campos-materiais-quantidade" style="display: none;">
+                        <div class="form-group">
+                            <label>Quantidade de Cimento (sacos):</label>
+                            <input type="text" id="quantidade-cimento" placeholder="Ex: 10">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Quantidade de Areia:</label>
+                            <div class="form-control-inline">
+                                <input type="text" id="quantidade-areia-m3" placeholder="Ex: 1.2" style="flex: 1;">
+                                <span>m³ ou</span>
+                                <input type="text" id="quantidade-areia-sacos" placeholder="Ex: 25" style="flex: 1;">
+                                <span>sacos (20kg)</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Quantidade de Pedra:</label>
+                            <div class="form-control-inline">
+                                <input type="text" id="quantidade-pedra-m3" placeholder="Ex: 1.2" style="flex: 1;">
+                                <span>m³ ou</span>
+                                <input type="text" id="quantidade-pedra-sacos" placeholder="Ex: 25" style="flex: 1;">
+                                <span>sacos (20kg)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Proporção (Cimento:Areia:Pedra):</label>
+                        <div class="form-control-inline">
+                            <input type="text" id="proporcao-cimento" value="1" style="width: 60px;">
+                            <span>:</span>
+                            <input type="text" id="proporcao-areia" value="2" style="width: 60px;">
+                            <span>:</span>
+                            <input type="text" id="proporcao-pedra" value="2" style="width: 60px;">
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="calcular-materiais" class="btn"><i class="fas fa-calculator"></i> Calcular Materiais</button>
+                        <button id="resetar-materiais" class="btn"><i class="fas fa-undo"></i> Resetar Valores</button>
+                    </div>
+                </div>
+
+                <div id="resultado-materiais" class="resultado" style="display: none;"></div>
+            </section>
+
+            <!-- CALCULADORA BÁSICA -->
+            <section id="basica" class="section">
+                <h2><i class="fas fa-calculator"></i> Calculadora Básica</h2>
+                
+                <div class="card">
+                    <div class="calc-display" id="calc-display">0</div>
+                    
+                    <div class="calc-buttons">
+                        <button class="calc-btn">7</button>
+                        <button class="calc-btn">8</button>
+                        <button class="calc-btn">9</button>
+                        <button class="calc-btn operator">/</button>
+                        <button class="calc-btn">4</button>
+                        <button class="calc-btn">5</button>
+                        <button class="calc-btn">6</button>
+                        <button class="calc-btn operator">*</button>
+                        <button class="calc-btn">1</button>
+                        <button class="calc-btn">2</button>
+                        <button class="calc-btn">3</button>
+                        <button class="calc-btn operator">-</button>
+                        <button class="calc-btn">0</button>
+                        <button class="calc-btn">.</button>
+                        <button class="calc-btn operator">=</button>
+                        <button class="calc-btn operator">+</button>
+                        <button class="calc-btn action">C</button>
+                        <button class="calc-btn action">M</button>
+                        <button class="calc-btn action"><i class="fas fa-backspace"></i></button>
+                        <button class="calc-btn" style="visibility: hidden;"></button>
+                    </div>
+
+                    <div class="calc-history">
+                        <h3>Histórico:</h3>
+                        <div id="calc-history-items"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Constantes
+        const LARGURA_TRELICA = new Decimal(0.37);
+        const LARGURA_ISOPOR = new Decimal(0.42);
+        const COMPRIMENTO_STEP = new Decimal(0.2);
+        const PESO_AREIA_POR_M3 = new Decimal(1450);
+        const PESO_SACO_AREIA = new Decimal(20);
+        const PESO_SACO_CIMENTO = new Decimal(50);
+
+        // Verificar disponibilidade de localStorage
+        let storageAvailable = false;
+        try {
+            localStorage.setItem('test', 'test');
+            localStorage.removeItem('test');
+            storageAvailable = true;
+        } catch (e) {
+            console.log('localStorage não disponível, usando memória local');
+            storageAvailable = false;
+        }
+
+        // Configurações
+        let config = {
+            fator_argamassa_simples: "5.0",
+            fator_argamassa_dupla: "7.0",
+            coeficiente_rejunte: "1.58"
+        };
+
+        // Carregar configurações do localStorage, se disponível
+        if (storageAvailable) {
+            try {
+                const savedConfig = localStorage.getItem('calculadora_construcao_config');
+                if (savedConfig) {
+                    config = JSON.parse(savedConfig);
+                }
+            } catch (e) {
+                console.error('Erro ao carregar configurações:', e);
+            }
+        }
+        
+        // Definir valores iniciais
+        document.getElementById('argamassa-fator').value = config.fator_argamassa_simples;
+        document.getElementById('rejunte-coeficiente').value = config.coeficiente_rejunte;
+
+        // Funções utilitárias
+        function parseDecimal(value) {
+            if (!value || value.trim() === "") return null;
+            const normalized = value.replace(',', '.');
+            try {
+                return new Decimal(normalized);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Navegação entre seções
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Remover classe ativa de todos os itens do menu e seções
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                
+                // Adicionar classe ativa ao item clicado
+                item.classList.add('active');
+                
+                // Mostrar a seção correspondente
+                const sectionId = item.id.split('-')[1];
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Resetar valores padrão
+        document.getElementById('resetarValores').addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja resetar todos os valores para o padrão?')) {
+                config = {
+                    fator_argamassa_simples: "5.0",
+                    fator_argamassa_dupla: "7.0",
+                    coeficiente_rejunte: "1.58"
+                };
+                
+                if (storageAvailable) {
+                    try {
+                        localStorage.removeItem('calculadora_construcao_config');
+                    } catch (e) {
+                        console.error('Erro ao remover configurações:', e);
+                    }
+                }
+                
+                document.getElementById('argamassa-fator').value = config.fator_argamassa_simples;
+                document.getElementById('rejunte-coeficiente').value = config.coeficiente_rejunte;
+                
+                // Resetar os campos das calculadoras
+                document.querySelectorAll('.section input[type="text"]').forEach(input => {
+                    if (!input.id.includes('proporcao')) {
+                        input.value = '';
+                    }
+                });
+                
+                // Resetar valores específicos
+                document.getElementById('proporcao-cimento').value = '1';
+                document.getElementById('proporcao-areia').value = '2';
+                document.getElementById('proporcao-pedra').value = '2';
+                document.getElementById('rejunte-espessura').value = '3';
+                document.getElementById('rejunte-juntas').value = '2';
+                
+                // Esconder todos os resultados
+                document.querySelectorAll('.resultado').forEach(elem => {
+                    elem.style.display = 'none';
+                });
+            }
+        });
+
+        // =======================================================
+        // CALCULADORA DE LAJE
+        // =======================================================
+        
+        // Adicionar ambiente de laje
+        document.getElementById('adicionar-ambiente-laje').addEventListener('click', () => {
+            const container = document.getElementById('laje-ambientes-container');
+            const ambientes = container.querySelectorAll('.ambiente');
+            const novoIndex = ambientes.length;
+            
+            const novoAmbiente = document.createElement('div');
+            novoAmbiente.className = 'ambiente';
+            novoAmbiente.dataset.index = novoIndex;
+            
+            novoAmbiente.innerHTML = `
+                <h3>Ambiente ${novoIndex + 1}:</h3>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Largura (m):</label>
+                        <input type="text" class="laje-largura" placeholder="Ex: 3.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Comprimento (m):</label>
+                        <input type="text" class="laje-comprimento" placeholder="Ex: 4.0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Direção de Instalação:</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="laje-direcao-menor-${novoIndex}" name="laje-direcao-${novoIndex}" value="menor" checked>
+                            <label for="laje-direcao-menor-${novoIndex}">Menor Lado</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="laje-direcao-maior-${novoIndex}" name="laje-direcao-${novoIndex}" value="maior">
+                            <label for="laje-direcao-maior-${novoIndex}">Maior Lado</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-remove remover-ambiente"><i class="fas fa-trash"></i> Remover Ambiente</button>
+            `;
+            
+            container.appendChild(novoAmbiente);
+            
+            // Mostrar botões de remover em todos os ambientes se houver mais de um
+            if (ambientes.length > 0) {
+                document.querySelectorAll('.remover-ambiente').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+            }
+            
+            // Adicionar evento para o botão remover
+            novoAmbiente.querySelector('.remover-ambiente').addEventListener('click', (e) => {
+                e.target.closest('.ambiente').remove();
+                
+                // Reindexar os ambientes
+                const ambientesAtualizados = container.querySelectorAll('.ambiente');
+                ambientesAtualizados.forEach((amb, idx) => {
+                    amb.dataset.index = idx;
+                    amb.querySelector('h3').textContent = `Ambiente ${idx + 1}:`;
+                    amb.querySelectorAll('input[type="radio"]').forEach(radio => {
+                        radio.name = `laje-direcao-${idx}`;
+                        radio.id = radio.id.replace(/\d+$/, idx);
+                    });
+                    amb.querySelectorAll('label[for^="laje-direcao"]').forEach(label => {
+                        label.htmlFor = label.htmlFor.replace(/\d+$/, idx);
+                    });
+                });
+                
+                // Esconder botões de remover se houver apenas um ambiente
+                if (ambientesAtualizados.length === 1) {
+                    document.querySelectorAll('.remover-ambiente').forEach(btn => {
+                        btn.style.display = 'none';
+                    });
+                }
+            });
+        });
+
+        // Calcular Laje
+        document.getElementById('calcular-laje').addEventListener('click', () => {
+            const tipoLaje = document.querySelector('input[name="tipo-laje"]:checked').value;
+            const ambientes = document.querySelectorAll('#laje-ambientes-container .ambiente');
+            
+            let resultado = "";
+            let totalArea = new Decimal(0);
+            let totalElementos = 0;
+            
+            // HashMap para armazenar a contagem de vigas por comprimento
+            let beamsPerLength = {};
+            
+            for (let i = 0; i < ambientes.length; i++) {
+                const ambiente = ambientes[i];
+                const larguraOriginal = parseDecimal(ambiente.querySelector('.laje-largura').value);
+                const comprimentoOriginal = parseDecimal(ambiente.querySelector('.laje-comprimento').value);
+                const direcao = ambiente.querySelector('input[name^="laje-direcao"]:checked').value;
+                
+                if (!larguraOriginal || !comprimentoOriginal) {
+                    resultado = `Dimensões inválidas no ambiente ${i + 1}`;
+                    break;
+                }
+                
+                let ladoInstalacao, ladoPerpendicular;
+                
+                if (direcao === 'maior') {
+                    if (larguraOriginal.greaterThanOrEqualTo(comprimentoOriginal)) {
+                        ladoInstalacao = larguraOriginal;
+                        ladoPerpendicular = comprimentoOriginal;
+                    } else {
+                        ladoInstalacao = comprimentoOriginal;
+                        ladoPerpendicular = larguraOriginal;
+                    }
+                } else {
+                    if (larguraOriginal.lessThanOrEqualTo(comprimentoOriginal)) {
+                        ladoInstalacao = larguraOriginal;
+                        ladoPerpendicular = comprimentoOriginal;
+                    } else {
+                        ladoInstalacao = comprimentoOriginal;
+                        ladoPerpendicular = larguraOriginal;
+                    }
+                }
+                
+                const larguraStep = tipoLaje === 'trelica' ? LARGURA_TRELICA : LARGURA_ISOPOR;
+                
+                const comprimentoAjustado = ajustarDimensao(ladoInstalacao, COMPRIMENTO_STEP);
+                const [larguraAjustada, numVigas] = reajuste(ladoPerpendicular, larguraStep);
+                
+                // Acumular vigas por comprimento
+                if (!beamsPerLength[comprimentoAjustado.toString()]) {
+                    beamsPerLength[comprimentoAjustado.toString()] = 0;
+                }
+                beamsPerLength[comprimentoAjustado.toString()] += numVigas;
+                
+                let elementos;
+                if (tipoLaje === 'trelica') {
+                    elementos = calcTrelica(larguraAjustada, comprimentoAjustado);
+                } else {
+                    elementos = calcIsopor(numVigas, comprimentoAjustado);
+                }
+                
+                const areaAmbiente = larguraOriginal.times(comprimentoOriginal);
+                totalArea = totalArea.plus(areaAmbiente);
+                totalElementos += elementos;
+                
+                resultado += `Ambiente ${i + 1}:\n`;
+                resultado += `Tipo de Laje: ${tipoLaje === 'trelica' ? 'Treliça' : 'Isopor'}\n`;
+                resultado += `Direção de instalação: ${direcao === 'menor' ? 'Menor lado' : 'Maior lado'}\n`;
+                resultado += `Largura Ajustada: ${larguraAjustada.toFixed(2)} m\n`;
+                resultado += `Comprimento Ajustado: ${comprimentoAjustado.toFixed(2)} m\n`;
+                resultado += `Vigas: ${numVigas} de ${comprimentoAjustado.toFixed(2)} m\n`;
+                resultado += `${tipoLaje === 'trelica' ? 'Lajotas' : 'Placas de isopor'}: ${elementos}\n`;
+                resultado += `Área do Ambiente: ${areaAmbiente.toFixed(2)} m²\n\n`;
+            }
+            
+            if (!resultado.includes("inválidas")) {
+                resultado += `Área Total: ${totalArea.toFixed(2)} m²\n`;
+                resultado += `Total de Vigas:\n`;
+                
+                // Exibir o total de vigas por comprimento
+                for (const [comprimento, quantidade] of Object.entries(beamsPerLength)) {
+                    resultado += `  ${quantidade} vigas de ${parseDecimal(comprimento).toFixed(2)} m\n`;
+                }
+                
+                resultado += `Total de ${tipoLaje === 'trelica' ? 'Lajotas' : 'Placas de isopor'}: ${totalElementos}\n`;
+            }
+            
+            // Formatar o resultado com HTML para melhor visualização
+            let resultadoHTML = `<div class="resultado-titulo"><i class="fas fa-th"></i> RESULTADO DO CÁLCULO DE LAJE</div>`;
+            
+            if (resultado.includes("inválidas")) {
+                resultadoHTML += `<div class="resultado-secao">${resultado}</div>`;
+            } else {
+                // Separar por ambientes
+                const partes = resultado.split("\n\n");
+                
+                // Processar seções de ambiente
+                for (let i = 0; i < partes.length - 1; i++) {
+                    if (partes[i].startsWith("Ambiente")) {
+                        const linhas = partes[i].split("\n");
+                        resultadoHTML += `<div class="resultado-secao">`;
+                        resultadoHTML += `<div class="resultado-destaque">${linhas[0]}</div>`;
+                        
+                        for (let j = 1; j < linhas.length; j++) {
+                            resultadoHTML += `${linhas[j]}<br>`;
+                        }
+                        
+                        resultadoHTML += `</div>`;
+                    }
+                }
+                
+                // Processar seção de totais
+                if (partes[partes.length - 1]) {
+                    const linhasTotais = partes[partes.length - 1].split("\n");
+                    resultadoHTML += `<div class="resultado-secao">`;
+                    
+                    for (let i = 0; i < linhasTotais.length; i++) {
+                        if (linhasTotais[i].startsWith("Área Total") || 
+                            linhasTotais[i].startsWith("Total de ")) {
+                            resultadoHTML += `<div class="resultado-total">${linhasTotais[i]}</div>`;
+                        } else if (linhasTotais[i].trim()) {
+                            resultadoHTML += `${linhasTotais[i]}<br>`;
+                        }
+                    }
+                    
+                    resultadoHTML += `</div>`;
+                }
+            }
+            
+            document.getElementById('resultado-laje').innerHTML = resultadoHTML;
+            document.getElementById('resultado-laje').style.display = 'block';
+        });
+        
+        // Funções auxiliares para cálculo de laje
+        function ajustarDimensao(dimensao, step) {
+            return dimensao.dividedBy(step).ceil().times(step);
+        }
+        
+        function reajuste(num, div) {
+            const count = num.dividedBy(div).ceil();
+            return [count.times(div), parseInt(count.toString())];
+        }
+        
+        function calcTrelica(largura, comprimento) {
+            return parseInt(largura.times(comprimento).times(13).ceil().toString());
+        }
+        
+        function calcIsopor(vigas, comprimento) {
+            return parseInt(new Decimal(vigas).times(comprimento).dividedBy(0.5).ceil().toString());
+        }
+        
+        // Resetar calculadora de laje
+        document.getElementById('resetar-laje').addEventListener('click', () => {
+            document.getElementById('laje-trelica').checked = true;
+            
+            const container = document.getElementById('laje-ambientes-container');
+            container.innerHTML = `
+                <div class="ambiente" data-index="0">
+                    <h3>Ambiente 1:</h3>
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Largura (m):</label>
+                            <input type="text" class="laje-largura" placeholder="Ex: 3.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Comprimento (m):</label>
+                            <input type="text" class="laje-comprimento" placeholder="Ex: 4.0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Direção de Instalação:</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="laje-direcao-menor-0" name="laje-direcao-0" value="menor" checked>
+                                <label for="laje-direcao-menor-0">Menor Lado</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="laje-direcao-maior-0" name="laje-direcao-0" value="maior">
+                                <label for="laje-direcao-maior-0">Maior Lado</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-remove remover-ambiente" style="display: none;"><i class="fas fa-trash"></i> Remover Ambiente</button>
+                </div>
+            `;
+            
+            document.getElementById('resultado-laje').style.display = 'none';
+        });
+
+        // =======================================================
+        // CALCULADORA DE PISO
+        // =======================================================
+        
+        // Controle de opções de cálculo
+        document.getElementById('calcular-piso').addEventListener('change', function() {
+            validarSelecaoPiso('p');
+            document.getElementById('campo-area-caixa').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('calcular-argamassa').addEventListener('change', function() {
+            validarSelecaoPiso('a');
+            document.getElementById('campos-argamassa').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('calcular-rejunte').addEventListener('change', function() {
+            validarSelecaoPiso('r');
+            document.getElementById('campos-rejunte').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        function validarSelecaoPiso(opcao) {
+            const calcularPiso = document.getElementById('calcular-piso');
+            const calcularArgamassa = document.getElementById('calcular-argamassa');
+            const calcularRejunte = document.getElementById('calcular-rejunte');
+            
+            const totalSelecionado = calcularPiso.checked + calcularArgamassa.checked + calcularRejunte.checked;
+            
+            if (totalSelecionado > 2) {
+                switch (opcao) {
+                    case 'p':
+                        calcularArgamassa.checked = false;
+                        calcularRejunte.checked = false;
+                        break;
+                    case 'a':
+                        calcularRejunte.checked = false;
+                        if (!calcularPiso.checked && !calcularArgamassa.checked) {
+                            calcularPiso.checked = true;
+                        }
+                        break;
+                    case 'r':
+                        calcularArgamassa.checked = false;
+                        if (!calcularPiso.checked && !calcularRejunte.checked) {
+                            calcularPiso.checked = true;
+                        }
+                        break;
+                }
+            }
+            
+            // Não permite selecionar argamassa e rejunte juntos
+            if (calcularArgamassa.checked && calcularRejunte.checked) {
+                switch (opcao) {
+                    case 'a':
+                        calcularRejunte.checked = false;
+                        break;
+                    case 'r':
+                        calcularArgamassa.checked = false;
+                        break;
+                }
+            }
+            
+            // Atualizar exibição dos campos
+            document.getElementById('campos-argamassa').style.display = calcularArgamassa.checked ? 'block' : 'none';
+            document.getElementById('campos-rejunte').style.display = calcularRejunte.checked ? 'block' : 'none';
+            document.getElementById('campo-area-caixa').style.display = calcularPiso.checked ? 'block' : 'none';
+        }
+        
+        // Método de aplicação da argamassa
+        document.getElementById('argamassa-simples').addEventListener('change', atualizarFatorArgamassa);
+        document.getElementById('argamassa-dupla').addEventListener('change', atualizarFatorArgamassa);
+        
+        function atualizarFatorArgamassa() {
+            const metodoAplicacao = document.querySelector('input[name="metodo-argamassa"]:checked').value;
+            
+            if (metodoAplicacao === 'simples') {
+                document.getElementById('argamassa-fator').value = config.fator_argamassa_simples;
+            } else {
+                document.getElementById('argamassa-fator').value = config.fator_argamassa_dupla;
+            }
+        }
+        
+        // Salvar valores padrão
+        document.getElementById('salvar-fator-argamassa').addEventListener('click', () => {
+            const metodoAplicacao = document.querySelector('input[name="metodo-argamassa"]:checked').value;
+            const fator = document.getElementById('argamassa-fator').value;
+            
+            if (metodoAplicacao === 'simples') {
+                config.fator_argamassa_simples = fator;
+            } else {
+                config.fator_argamassa_dupla = fator;
+            }
+            
+            if (storageAvailable) {
+                try {
+                    localStorage.setItem('calculadora_construcao_config', JSON.stringify(config));
+                } catch (e) {
+                    console.error('Erro ao salvar configurações:', e);
+                }
+            }
+            alert('Valor padrão salvo com sucesso!');
+        });
+        
+        document.getElementById('salvar-coeficiente-rejunte').addEventListener('click', () => {
+            const coeficiente = document.getElementById('rejunte-coeficiente').value;
+            
+            config.coeficiente_rejunte = coeficiente;
+            
+            if (storageAvailable) {
+                try {
+                    localStorage.setItem('calculadora_construcao_config', JSON.stringify(config));
+                } catch (e) {
+                    console.error('Erro ao salvar configurações:', e);
+                }
+            }
+            alert('Valor padrão salvo com sucesso!');
+        });
+        
+        // Adicionar ambiente de piso
+        document.getElementById('adicionar-ambiente-piso').addEventListener('click', () => {
+            const container = document.getElementById('piso-ambientes-container');
+            const ambientes = container.querySelectorAll('.ambiente');
+            const novoIndex = ambientes.length;
+            
+            const novoAmbiente = document.createElement('div');
+            novoAmbiente.className = 'ambiente';
+            novoAmbiente.dataset.index = novoIndex;
+            
+            novoAmbiente.innerHTML = `
+                <h3>Ambiente ${novoIndex + 1}:</h3>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Largura (m):</label>
+                        <input type="text" class="piso-largura" placeholder="Ex: 3.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Comprimento (m):</label>
+                        <input type="text" class="piso-comprimento" placeholder="Ex: 4.0">
+                    </div>
+                </div>
+                <button class="btn btn-remove remover-ambiente"><i class="fas fa-trash"></i> Remover Ambiente</button>
+            `;
+            
+            container.appendChild(novoAmbiente);
+            
+            // Mostrar botões de remover em todos os ambientes se houver mais de um
+            if (ambientes.length > 0) {
+                document.querySelectorAll('.remover-ambiente').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+            }
+            
+            // Adicionar evento para o botão remover
+            novoAmbiente.querySelector('.remover-ambiente').addEventListener('click', (e) => {
+                e.target.closest('.ambiente').remove();
+                
+                // Reindexar os ambientes
+                const ambientesAtualizados = container.querySelectorAll('.ambiente');
+                ambientesAtualizados.forEach((amb, idx) => {
+                    amb.dataset.index = idx;
+                    amb.querySelector('h3').textContent = `Ambiente ${idx + 1}:`;
+                });
+                
+                // Esconder botões de remover se houver apenas um ambiente
+                if (ambientesAtualizados.length === 1) {
+                    document.querySelectorAll('.remover-ambiente').forEach(btn => {
+                        btn.style.display = 'none';
+                    });
+                }
+            });
+        });
+        
+        // Calcular Piso
+        document.getElementById('calcular-piso-btn').addEventListener('click', () => {
+            const calcularPiso = document.getElementById('calcular-piso').checked;
+            const calcularArgamassa = document.getElementById('calcular-argamassa').checked;
+            const calcularRejunte = document.getElementById('calcular-rejunte').checked;
+            
+            const ambientes = document.querySelectorAll('#piso-ambientes-container .ambiente');
+            
+            let resultado = "";
+            let areaTotal = new Decimal(0);
+            
+            // Calcular área total
+            for (let i = 0; i < ambientes.length; i++) {
+                const ambiente = ambientes[i];
+                const largura = parseDecimal(ambiente.querySelector('.piso-largura').value);
+                const comprimento = parseDecimal(ambiente.querySelector('.piso-comprimento').value);
+                
+                if (!largura || !comprimento) {
+                    resultado = `Dimensões inválidas no ambiente ${i + 1}`;
+                    break;
+                }
+                
+                areaTotal = areaTotal.plus(largura.times(comprimento));
+            }
+            
+            if (resultado === "") {  // Se não houver erros
+                if (calcularPiso) {
+                    const areaCaixa = parseDecimal(document.getElementById('area-caixa').value);
+                    
+                    if (!areaCaixa) {
+                        resultado = "Área da caixa inválida";
+                    } else {
+                        const caixasNecessarias = areaTotal.dividedBy(areaCaixa).ceil();
+                        const metragemTotal = caixasNecessarias.times(areaCaixa);
+                        const sobraEstimada = metragemTotal.minus(areaTotal);
+                        
+                        resultado += `Cálculo de Piso:\n`;
+                        resultado += `Área da Caixa: ${areaCaixa.toFixed(2)} m²\n`;
+                        resultado += `Área Total a Cobrir: ${areaTotal.toFixed(2)} m²\n`;
+                        resultado += `Caixas Necessárias: ${caixasNecessarias} (${metragemTotal.toFixed(2)} m²)\n`;
+                        resultado += `Sobra Estimada: ${sobraEstimada.toFixed(2)} m²\n\n`;
+                    }
+                }
+                
+                if (calcularArgamassa && resultado === "") {
+                    const fator = parseDecimal(document.getElementById('argamassa-fator').value);
+                    const metodoAplicacao = document.querySelector('input[name="metodo-argamassa"]:checked').value;
+                    
+                    if (!fator) {
+                        resultado = "Fator de argamassa inválido";
+                    } else {
+                        const argamassaKg = areaTotal.times(fator);
+                        const sacosNecessarios = argamassaKg.dividedBy(20).ceil();
+                        
+                        resultado += `Cálculo de Argamassa:\n`;
+                        resultado += `Área Total: ${areaTotal.toFixed(2)} m²\n`;
+                        resultado += `Método de Aplicação: ${metodoAplicacao === 'simples' ? 'Aplicação Simples' : 'Colagem Dupla'}\n`;
+                        resultado += `Fator de Consumo: ${fator.toFixed(2)} kg/m²\n`;
+                        resultado += `Quantidade de Argamassa Necessária: ${argamassaKg.toFixed(2)} kg\n`;
+                        resultado += `Sacos de 20kg Necessários: ${sacosNecessarios}\n\n`;
+                    }
+                }
+                
+                if (calcularRejunte && resultado === "") {
+                    const tileWidth = parseDecimal(document.getElementById('rejunte-largura').value);
+                    const tileLength = parseDecimal(document.getElementById('rejunte-comprimento').value);
+                    const tileThickness = parseDecimal(document.getElementById('rejunte-espessura').value);
+                    const jointSpacing = parseDecimal(document.getElementById('rejunte-juntas').value);
+                    const rejunteCoeficiente = parseDecimal(document.getElementById('rejunte-coeficiente').value);
+                    
+                    if (!tileWidth || !tileLength || !tileThickness || !jointSpacing || !rejunteCoeficiente) {
+                        resultado = "Dados do revestimento para o rejunte inválidos";
+                    } else {
+                        // Fórmula: kg/m² = (L+C) x E x J x Coef / (L x C)
+                        const numerator = tileWidth.plus(tileLength).times(tileThickness).times(jointSpacing).times(rejunteCoeficiente);
+                        const denominator = tileWidth.times(tileLength);
+                        const rejuntePorM2 = numerator.dividedBy(denominator);
+                        
+                        const rejunteTotal = rejuntePorM2.times(areaTotal).times(1.05); // Acrescentar 5% de perda
+                        const rejunteTotalArredondado = rejunteTotal.ceil();
+                        
+                        resultado += `Cálculo de Rejunte:\n`;
+                        resultado += `Área Total: ${areaTotal.toFixed(2)} m²\n`;
+                        resultado += `Revestimento: ${tileWidth.toFixed(0)}mm x ${tileLength.toFixed(0)}mm x ${tileThickness.toFixed(0)}mm\n`;
+                        resultado += `Espaçamento das Juntas: ${jointSpacing.toFixed(2)} mm\n`;
+                        resultado += `Coeficiente de Rejuntamento: ${rejunteCoeficiente.toFixed(2)}\n`;
+                        resultado += `Quantidade de Rejunte Necessária: ${rejunteTotalArredondado.toFixed(0)} kg\n\n`;
+                    }
+                }
+            }
+            
+            // Formatar o resultado com HTML para melhor visualização
+            let resultadoHTML = `<div class="resultado-titulo"><i class="fas fa-border-all"></i> RESULTADO DO CÁLCULO DE PISO</div>`;
+            
+            if (resultado.includes("inválida")) {
+                resultadoHTML += `<div class="resultado-secao">${resultado}</div>`;
+            } else {
+                // Separar as seções do resultado
+                const secoes = resultado.split("\n\n");
+                
+                for (let i = 0; i < secoes.length; i++) {
+                    if (secoes[i].trim()) {
+                        resultadoHTML += `<div class="resultado-secao">`;
+                        
+                        const linhas = secoes[i].split("\n");
+                        if (linhas[0].includes("Cálculo de")) {
+                            resultadoHTML += `<div class="resultado-destaque">${linhas[0]}</div>`;
+                            
+                            for (let j = 1; j < linhas.length; j++) {
+                                if (linhas[j].includes("Caixas Necessárias") || 
+                                    linhas[j].includes("Quantidade de") || 
+                                    linhas[j].includes("Sacos")) {
+                                    resultadoHTML += `<div class="resultado-total">${linhas[j]}</div>`;
+                                } else {
+                                    resultadoHTML += `${linhas[j]}<br>`;
+                                }
+                            }
+                        } else {
+                            for (let j = 0; j < linhas.length; j++) {
+                                resultadoHTML += `${linhas[j]}<br>`;
+                            }
+                        }
+                        
+                        resultadoHTML += `</div>`;
+                    }
+                }
+            }
+            
+            document.getElementById('resultado-piso').innerHTML = resultadoHTML;
+            document.getElementById('resultado-piso').style.display = 'block';
+        });
+        
+        // Resetar calculadora de piso
+        document.getElementById('resetar-piso').addEventListener('click', () => {
+            document.getElementById('calcular-piso').checked = true;
+            document.getElementById('calcular-argamassa').checked = false;
+            document.getElementById('calcular-rejunte').checked = false;
+            document.getElementById('campo-area-caixa').style.display = 'block';
+            document.getElementById('campos-argamassa').style.display = 'none';
+            document.getElementById('campos-rejunte').style.display = 'none';
+            
+            const container = document.getElementById('piso-ambientes-container');
+            container.innerHTML = `
+                <div class="ambiente" data-index="0">
+                    <h3>Ambiente 1:</h3>
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Largura (m):</label>
+                            <input type="text" class="piso-largura" placeholder="Ex: 3.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Comprimento (m):</label>
+                            <input type="text" class="piso-comprimento" placeholder="Ex: 4.0">
+                        </div>
+                    </div>
+                    <button class="btn btn-remove remover-ambiente" style="display: none;"><i class="fas fa-trash"></i> Remover Ambiente</button>
+                </div>
+            `;
+            
+            document.getElementById('area-caixa').value = '';
+            document.getElementById('argamassa-simples').checked = true;
+            document.getElementById('argamassa-fator').value = config.fator_argamassa_simples;
+            document.getElementById('rejunte-largura').value = '';
+            document.getElementById('rejunte-comprimento').value = '';
+            document.getElementById('rejunte-espessura').value = '3';
+            document.getElementById('rejunte-juntas').value = '2';
+            document.getElementById('rejunte-coeficiente').value = config.coeficiente_rejunte;
+            
+            document.getElementById('resultado-piso').style.display = 'none';
+        });
+
+        // =======================================================
+        // CALCULADORA DE FORRO
+        // =======================================================
+        
+        // Adicionar ambiente de forro
+        document.getElementById('adicionar-ambiente-forro').addEventListener('click', () => {
+            const container = document.getElementById('forro-ambientes-container');
+            const ambientes = container.querySelectorAll('.ambiente');
+            const novoIndex = ambientes.length;
+            
+            const novoAmbiente = document.createElement('div');
+            novoAmbiente.className = 'ambiente';
+            novoAmbiente.dataset.index = novoIndex;
+            
+            novoAmbiente.innerHTML = `
+                <h3>Ambiente ${novoIndex + 1}:</h3>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Largura (m):</label>
+                        <input type="text" class="forro-largura" placeholder="Ex: 3.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Comprimento (m):</label>
+                        <input type="text" class="forro-comprimento" placeholder="Ex: 4.0">
+                    </div>
+                </div>
+                <button class="btn btn-remove remover-ambiente"><i class="fas fa-trash"></i> Remover Ambiente</button>
+            `;
+            
+            container.appendChild(novoAmbiente);
+            
+            // Mostrar botões de remover em todos os ambientes se houver mais de um
+            if (ambientes.length > 0) {
+                document.querySelectorAll('.remover-ambiente').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+            }
+            
+            // Adicionar evento para o botão remover
+            novoAmbiente.querySelector('.remover-ambiente').addEventListener('click', (e) => {
+                e.target.closest('.ambiente').remove();
+                
+                // Reindexar os ambientes
+                const ambientesAtualizados = container.querySelectorAll('.ambiente');
+                ambientesAtualizados.forEach((amb, idx) => {
+                    amb.dataset.index = idx;
+                    amb.querySelector('h3').textContent = `Ambiente ${idx + 1}:`;
+                });
+                
+                // Esconder botões de remover se houver apenas um ambiente
+                if (ambientesAtualizados.length === 1) {
+                    document.querySelectorAll('.remover-ambiente').forEach(btn => {
+                        btn.style.display = 'none';
+                    });
+                }
+            });
+        });
+        
+        // Calcular Forro
+        document.getElementById('calcular-forro').addEventListener('click', () => {
+            const direcaoGlobal = document.querySelector('input[name="forro-direcao-global"]:checked').value;
+            const ambientes = document.querySelectorAll('#forro-ambientes-container .ambiente');
+            
+            let resultado = "";
+            let totalArea = new Decimal(0);
+            let totalAcabamento = new Decimal(0);
+            let totalEmendaMetros = new Decimal(0);
+            const tamanhoEmendaBarra = new Decimal(6); // Comprimento das barras de emenda
+            let totalPecas = [0, 0, 0, 0]; // [3m, 4m, 5m, 6m]
+            const tamanhos = [new Decimal(3), new Decimal(4), new Decimal(5), new Decimal(6)];
+            
+            for (let i = 0; i < ambientes.length; i++) {
+                const ambiente = ambientes[i];
+                const largura = parseDecimal(ambiente.querySelector('.forro-largura').value);
+                const comprimento = parseDecimal(ambiente.querySelector('.forro-comprimento').value);
+                
+                if (!largura || !comprimento) {
+                    resultado = `Dimensões inválidas no ambiente ${i + 1}`;
+                    break;
+                }
+                
+                const area = largura.times(comprimento);
+                totalArea = totalArea.plus(area);
+                
+                const perimeter = largura.plus(comprimento).times(2);
+                totalAcabamento = totalAcabamento.plus(perimeter);
+                
+                let ladoInstalacao, ladoPerpendicular;
+                
+                if (direcaoGlobal === 'maior') {
+                    if (largura.greaterThanOrEqualTo(comprimento)) {
+                        ladoInstalacao = largura;
+                        ladoPerpendicular = comprimento;
+                    } else {
+                        ladoInstalacao = comprimento;
+                        ladoPerpendicular = largura;
+                    }
+                } else {
+                    if (largura.lessThanOrEqualTo(comprimento)) {
+                        ladoInstalacao = largura;
+                        ladoPerpendicular = comprimento;
+                    } else {
+                        ladoInstalacao = comprimento;
+                        ladoPerpendicular = largura;
+                    }
+                }
+                
+                // Calcular o número de fileiras (considerando a largura de 20cm)
+                const numFileiras = parseInt(ladoPerpendicular.dividedBy(0.2).ceil().toString());
+                
+                let pecasAmbiente = [0, 0, 0, 0];
+                let totalJuntas = 0;
+                
+                for (let f = 0; f < numFileiras; f++) {
+                    let comprimentoRestante = ladoInstalacao;
+                    let numPecasPorFileira = 0;
+                    
+                    while (comprimentoRestante.greaterThan(0)) {
+                        // Encontrar o maior tamanho possível que seja menor ou igual ao comprimento restante
+                        let melhorTamanho = null;
+                        for (let t = tamanhos.length - 1; t >= 0; t--) {
+                            if (tamanhos[t].lessThanOrEqualTo(comprimentoRestante)) {
+                                melhorTamanho = tamanhos[t];
+                                break;
+                            }
+                        }
+                        
+                        // Se não houver tamanho adequado, usar o menor tamanho disponível
+                        if (!melhorTamanho) {
+                            melhorTamanho = tamanhos[0];
+                        }
+                        
+                        const indice = tamanhos.findIndex(t => t.equals(melhorTamanho));
+                        pecasAmbiente[indice]++;
+                        totalPecas[indice]++;
+                        comprimentoRestante = comprimentoRestante.minus(melhorTamanho);
+                        numPecasPorFileira++;
+                    }
+                    
+                    if (numPecasPorFileira > 1) {
+                        // Cada junção precisa de emenda
+                        totalJuntas += numPecasPorFileira - 1;
+                    }
+                }
+                
+                const emendaMetrosAmbiente = new Decimal(totalJuntas).times(0.2);
+                
+                totalEmendaMetros = totalEmendaMetros.plus(emendaMetrosAmbiente);
+                
+                resultado += `Ambiente ${i + 1}: ${largura.toFixed(2)}m x ${comprimento.toFixed(2)}m = ${area.toFixed(2)}m²\n`;
+                resultado += `Perímetro: ${perimeter.toFixed(2)}m\n`;
+                resultado += `Direção de instalação: ${direcaoGlobal === 'maior' ? 'Maior lado' : 'Menor lado'}\n`;
+                
+                for (let j = 0; j < pecasAmbiente.length; j++) {
+                    if (pecasAmbiente[j] > 0) {
+                        resultado += `  Peças de ${tamanhos[j]}m: ${pecasAmbiente[j]}\n`;
+                    }
+                }
+                
+                if (emendaMetrosAmbiente.greaterThan(0)) {
+                    resultado += `  Quantidade de emenda necessária: ${emendaMetrosAmbiente.toFixed(2)} metros\n`;
+                } else {
+                    resultado += `  Emenda: Não é necessário\n`;
+                }
+                
+                resultado += `  Quantidade de acabamento: ${perimeter.toFixed(2)} metros\n\n`;
+            }
+            
+            if (!resultado.includes("inválidas")) {
+                // Calcular quantidade de barras de emenda
+                const totalEmendaBarras = parseInt(totalEmendaMetros.dividedBy(tamanhoEmendaBarra).ceil().toString());
+                
+                resultado += `Área total dos ambientes: ${totalArea.toFixed(2)}m²\n\n`;
+                resultado += `Total de peças necessárias:\n`;
+                
+                for (let j = 0; j < totalPecas.length; j++) {
+                    if (totalPecas[j] > 0) {
+                        resultado += `  Peças de ${tamanhos[j]}m: ${totalPecas[j]}\n`;
+                    }
+                }
+                
+                if (totalEmendaMetros.greaterThan(0)) {
+                    resultado += `\nTotal de emenda necessária: ${totalEmendaMetros.toFixed(2)} metros\n`;
+                    resultado += `Quantidade de barras de emenda de ${tamanhoEmendaBarra.toFixed(2)}m: ${totalEmendaBarras}\n`;
+                } else {
+                    resultado += `\nEmenda: Não é necessário\n`;
+                }
+                
+                resultado += `\nQuantidade total de acabamento: ${totalAcabamento.toFixed(2)} metros\n`;
+            }
+            
+            // Formatar o resultado com HTML para melhor visualização
+            let resultadoHTML = `<div class="resultado-titulo"><i class="fas fa-grip-lines"></i> RESULTADO DO CÁLCULO DE FORRO</div>`;
+            
+            if (resultado.includes("inválidas")) {
+                resultadoHTML += `<div class="resultado-secao">${resultado}</div>`;
+            } else {
+                // Separar por ambientes e a seção de totais
+                const partes = resultado.split("\n\n");
+                
+                // Processar seções de ambiente
+                for (let i = 0; i < partes.length; i++) {
+                    if (partes[i].startsWith("Ambiente")) {
+                        resultadoHTML += `<div class="resultado-secao">`;
+                        
+                        const linhas = partes[i].split("\n");
+                        resultadoHTML += `<div class="resultado-destaque">${linhas[0]}</div>`;
+                        
+                        for (let j = 1; j < linhas.length; j++) {
+                            if (linhas[j].startsWith("  Peças de")) {
+                                resultadoHTML += `<span style="color: #8BD6BD;">${linhas[j]}</span><br>`;
+                            } else {
+                                resultadoHTML += `${linhas[j]}<br>`;
+                            }
+                        }
+                        
+                        resultadoHTML += `</div>`;
+                    } else if (partes[i].includes("Área total dos ambientes")) {
+                        // Seção de resultados totais
+                        resultadoHTML += `<div class="resultado-secao">`;
+                        
+                        const linhas = partes[i].split("\n");
+                        for (let j = 0; j < linhas.length; j++) {
+                            if (linhas[j].startsWith("Área total") || 
+                                linhas[j].includes("Total de emenda") ||
+                                linhas[j].includes("Quantidade total de acabamento")) {
+                                resultadoHTML += `<div class="resultado-total">${linhas[j]}</div>`;
+                            } else if (linhas[j].startsWith("Total de peças")) {
+                                resultadoHTML += `<div class="resultado-destaque">${linhas[j]}</div>`;
+                            } else if (linhas[j].startsWith("  Peças de")) {
+                                resultadoHTML += `<span style="color: #8BD6BD;">${linhas[j]}</span><br>`;
+                            } else if (linhas[j].trim()) {
+                                resultadoHTML += `${linhas[j]}<br>`;
+                            }
+                        }
+                        
+                        resultadoHTML += `</div>`;
+                    }
+                }
+            }
+            
+            document.getElementById('resultado-forro').innerHTML = resultadoHTML;
+            document.getElementById('resultado-forro').style.display = 'block';
+        });
+        
+        // Resetar calculadora de forro
+        document.getElementById('resetar-forro').addEventListener('click', () => {
+            document.getElementById('forro-direcao-maior').checked = true;
+            
+            const container = document.getElementById('forro-ambientes-container');
+            container.innerHTML = `
+                <div class="ambiente" data-index="0">
+                    <h3>Ambiente 1:</h3>
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Largura (m):</label>
+                            <input type="text" class="forro-largura" placeholder="Ex: 3.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Comprimento (m):</label>
+                            <input type="text" class="forro-comprimento" placeholder="Ex: 4.0">
+                        </div>
+                    </div>
+                    <button class="btn btn-remove remover-ambiente" style="display: none;"><i class="fas fa-trash"></i> Remover Ambiente</button>
+                </div>
+            `;
+            
+            document.getElementById('resultado-forro').style.display = 'none';
+        });
+
+        // =======================================================
+        // CALCULADORA DE MATERIAIS
+        // =======================================================
+        
+        // Controle do modo de entrada
+        document.getElementById('materiais-volume').addEventListener('change', function() {
+            document.getElementById('campos-materiais-volume').style.display = 'block';
+            document.getElementById('campos-materiais-quantidade').style.display = 'none';
+        });
+        
+        document.getElementById('materiais-quantidade').addEventListener('change', function() {
+            document.getElementById('campos-materiais-volume').style.display = 'none';
+            document.getElementById('campos-materiais-quantidade').style.display = 'block';
+        });
+        
+        // Calcular Materiais
+        document.getElementById('calcular-materiais').addEventListener('click', () => {
+            const modoEntrada = document.querySelector('input[name="modo-entrada-materiais"]:checked').value;
+            
+            let proporcaoCimento = parseDecimal(document.getElementById('proporcao-cimento').value) || new Decimal(1);
+            let proporcaoAreia = parseDecimal(document.getElementById('proporcao-areia').value) || new Decimal(2);
+            let proporcaoPedra = parseDecimal(document.getElementById('proporcao-pedra').value) || new Decimal(2);
+            
+            let volume, cimento, areia, pedra;
+            
+            if (modoEntrada === 'volume') {
+                volume = parseDecimal(document.getElementById('volume-concreto').value);
+                
+                if (!volume) {
+                    document.getElementById('resultado-materiais').textContent = "Volume de concreto inválido";
+                    document.getElementById('resultado-materiais').style.display = 'block';
+                    return;
+                }
+                
+                const proporcaoTotal = proporcaoCimento.plus(proporcaoAreia).plus(proporcaoPedra);
+                cimento = volume.times(proporcaoCimento).dividedBy(proporcaoTotal);
+                areia = volume.times(proporcaoAreia).dividedBy(proporcaoTotal);
+                pedra = volume.times(proporcaoPedra).dividedBy(proporcaoTotal);
+            } else {
+                cimento = parseDecimal(document.getElementById('quantidade-cimento').value);
+                
+                if (!cimento) {
+                    document.getElementById('resultado-materiais').textContent = "Quantidade de cimento inválida";
+                    document.getElementById('resultado-materiais').style.display = 'block';
+                    return;
+                }
+                
+                if (document.getElementById('quantidade-areia-m3').value) {
+                    areia = parseDecimal(document.getElementById('quantidade-areia-m3').value);
+                } else if (document.getElementById('quantidade-areia-sacos').value) {
+                    const areiaEmSacos = parseDecimal(document.getElementById('quantidade-areia-sacos').value);
+                    areia = areiaEmSacos.times(PESO_SACO_AREIA).dividedBy(PESO_AREIA_POR_M3);
+                } else {
+                    document.getElementById('resultado-materiais').textContent = "Quantidade de areia inválida";
+                    document.getElementById('resultado-materiais').style.display = 'block';
+                    return;
+                }
+                
+                if (document.getElementById('quantidade-pedra-m3').value) {
+                    pedra = parseDecimal(document.getElementById('quantidade-pedra-m3').value);
+                } else if (document.getElementById('quantidade-pedra-sacos').value) {
+                    const pedraEmSacos = parseDecimal(document.getElementById('quantidade-pedra-sacos').value);
+                    pedra = pedraEmSacos.times(PESO_SACO_AREIA).dividedBy(PESO_AREIA_POR_M3);
+                } else {
+                    document.getElementById('resultado-materiais').textContent = "Quantidade de pedra inválida";
+                    document.getElementById('resultado-materiais').style.display = 'block';
+                    return;
+                }
+                
+                volume = cimento.plus(areia).plus(pedra);
+            }
+            
+            // Cálculo final
+            const cimentoSacos = cimento.times(PESO_AREIA_POR_M3).dividedBy(PESO_SACO_CIMENTO).ceil();
+            const areiaM3 = areia.times(2).ceil().dividedBy(2);
+            const areiaSacos = areia.times(PESO_AREIA_POR_M3).dividedBy(PESO_SACO_AREIA).ceil();
+            const pedraM3 = pedra.times(2).ceil().dividedBy(2);
+            const pedraSacos = pedra.times(PESO_AREIA_POR_M3).dividedBy(PESO_SACO_AREIA).ceil();
+            
+            let resultado = `Volume de concreto: ${volume.toFixed(2)} m³\n`;
+            resultado += `Cimento: ${cimentoSacos} sacos de ${PESO_SACO_CIMENTO} kg\n`;
+            resultado += `Areia: ${areiaM3.toFixed(1)} m³ ou ${areiaSacos} sacos de ${PESO_SACO_AREIA} kg\n`;
+            resultado += `Pedra: ${pedraM3.toFixed(1)} m³ ou ${pedraSacos} sacos de ${PESO_SACO_AREIA} kg\n`;
+            resultado += `Proporção calculada (Cimento:Areia:Pedra): ${cimento.dividedBy(cimento).toFixed(2)}:${areia.dividedBy(cimento).toFixed(2)}:${pedra.dividedBy(cimento).toFixed(2)}`;
+            
+            // Formatar o resultado com HTML para melhor visualização
+            let resultadoHTML = `<div class="resultado-titulo"><i class="fas fa-cubes"></i> RESULTADO DO CÁLCULO DE MATERIAIS</div>`;
+            
+            if (resultado.includes("inválido")) {
+                resultadoHTML += `<div class="resultado-secao">${resultado}</div>`;
+            } else {
+                resultadoHTML += `<div class="resultado-secao">`;
+                
+                const linhas = resultado.split("\n");
+                for (let i = 0; i < linhas.length; i++) {
+                    if (linhas[i].startsWith("Volume de concreto")) {
+                        resultadoHTML += `<div class="resultado-destaque">${linhas[i]}</div>`;
+                    } else if (linhas[i].startsWith("Cimento:") || 
+                              linhas[i].startsWith("Areia:") || 
+                              linhas[i].startsWith("Pedra:")) {
+                        resultadoHTML += `<div class="resultado-total">${linhas[i]}</div>`;
+                    } else {
+                        resultadoHTML += `${linhas[i]}<br>`;
+                    }
+                }
+                
+                resultadoHTML += `</div>`;
+            }
+            
+            document.getElementById('resultado-materiais').innerHTML = resultadoHTML;
+            document.getElementById('resultado-materiais').style.display = 'block';
+        });
+        
+        // Resetar calculadora de materiais
+        document.getElementById('resetar-materiais').addEventListener('click', () => {
+            document.getElementById('materiais-volume').checked = true;
+            document.getElementById('campos-materiais-volume').style.display = 'block';
+            document.getElementById('campos-materiais-quantidade').style.display = 'none';
+            
+            document.getElementById('volume-concreto').value = '';
+            document.getElementById('quantidade-cimento').value = '';
+            document.getElementById('quantidade-areia-m3').value = '';
+            document.getElementById('quantidade-areia-sacos').value = '';
+            document.getElementById('quantidade-pedra-m3').value = '';
+            document.getElementById('quantidade-pedra-sacos').value = '';
+            
+            document.getElementById('proporcao-cimento').value = '1';
+            document.getElementById('proporcao-areia').value = '2';
+            document.getElementById('proporcao-pedra').value = '2';
+            
+            document.getElementById('resultado-materiais').style.display = 'none';
+        });
+
+        // =======================================================
+        // CALCULADORA BÁSICA
+        // =======================================================
+        
+        class CalculadoraBasica {
+            constructor() {
+                this.display = "0";
+                this.memoria = new Decimal(0);
+                this.operacaoPendente = null;
+                this.ultimoNumero = new Decimal(0);
+                this.limparNaProximaEntrada = false;
+                this.historico = [];
+            }
+            
+            processarEntrada(entrada) {
+                const digitosRegex = /[0-9.]/;
+                const operadoresRegex = /[+\-*/]/;
+                
+                if (digitosRegex.test(entrada)) {
+                    this.adicionarDigito(entrada);
+                } else if (operadoresRegex.test(entrada)) {
+                    this.definirOperacao(entrada);
+                } else if (entrada === '=' || entrada === 'Enter') {
+                    this.calcularResultado();
+                } else if (entrada === 'C' || entrada === 'c') {
+                    this.limpar();
+                } else if (entrada === 'M' || entrada === 'm') {
+                    this.usarMemoria();
+                } else if (entrada === 'Backspace' || entrada === '\u{8}') {
+                    this.apagar();
+                }
+                
+                this.atualizarDisplay();
+            }
+            
+            adicionarDigito(digito) {
+                if (this.limparNaProximaEntrada) {
+                    this.display = "";
+                    this.limparNaProximaEntrada = false;
+                }
+                if (digito === '.' && this.display.includes('.')) {
+                    return;
+                }
+                if (this.display === "0" && digito !== '.') {
+                    this.display = "";
+                }
+                this.display += digito;
+            }
+            
+            definirOperacao(op) {
+                this.calcularResultado();
+                this.ultimoNumero = new Decimal(this.display);
+                this.operacaoPendente = op;
+                this.limparNaProximaEntrada = true;
+            }
+            
+            calcularResultado() {
+                if (this.operacaoPendente) {
+                    const atual = new Decimal(this.display);
+                    let resultado;
+                    
+                    switch (this.operacaoPendente) {
+                        case '+':
+                            resultado = this.ultimoNumero.plus(atual);
+                            break;
+                        case '-':
+                            resultado = this.ultimoNumero.minus(atual);
+                            break;
+                        case '*':
+                            resultado = this.ultimoNumero.times(atual);
+                            break;
+                        case '/':
+                            if (atual.equals(0)) {
+                                resultado = new Decimal(0);
+                            } else {
+                                resultado = this.ultimoNumero.dividedBy(atual);
+                            }
+                            break;
+                        default:
+                            resultado = atual;
+                    }
+                    
+                    this.display = resultado.toString();
+                    this.historico.unshift(`${this.ultimoNumero} ${this.operacaoPendente} ${atual} = ${resultado}`);
+                    if (this.historico.length > 10) {
+                        this.historico.pop();
+                    }
+                    this.operacaoPendente = null;
+                    this.ultimoNumero = resultado;
+                }
+            }
+            
+            limpar() {
+                this.display = "0";
+                this.operacaoPendente = null;
+                this.ultimoNumero = new Decimal(0);
+                this.limparNaProximaEntrada = false;
+            }
+            
+            usarMemoria() {
+                this.display = this.memoria.toString();
+            }
+            
+            apagar() {
+                if (this.display.length > 1) {
+                    this.display = this.display.slice(0, -1);
+                } else {
+                    this.display = "0";
+                }
+            }
+            
+            atualizarDisplay() {
+                document.getElementById('calc-display').textContent = this.display;
+                
+                // Atualizar o histórico
+                const historicoElement = document.getElementById('calc-history-items');
+                historicoElement.innerHTML = '';
+                this.historico.forEach(item => {
+                    const p = document.createElement('p');
+                    p.textContent = item;
+                    historicoElement.appendChild(p);
+                });
+            }
+        }
+        
+        const calculadoraBasica = new CalculadoraBasica();
+        
+        // Eventos dos botões da calculadora
+        document.querySelectorAll('.calc-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                let valor;
+                if (btn.innerHTML === '<i class="fas fa-backspace"></i>') {
+                    valor = 'Backspace';
+                } else {
+                    valor = btn.textContent;
+                }
+                calculadoraBasica.processarEntrada(valor);
+            });
+        });
+        
+        // Capturar entrada do teclado
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('basica').classList.contains('active')) {
+                const tecla = e.key;
+                if (/[0-9.+\-*/=]|Backspace|Enter/.test(tecla)) {
+                    e.preventDefault();
+                    calculadoraBasica.processarEntrada(tecla);
+                } else if (tecla === 'c' || tecla === 'C') {
+                    calculadoraBasica.processarEntrada('C');
+                } else if (tecla === 'm' || tecla === 'M') {
+                    calculadoraBasica.processarEntrada('M');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
