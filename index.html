@@ -1199,7 +1199,7 @@
         }
         
         function calcIsopor(vigas, comprimento) {
-            return parseInt(new Decimal(vigas).times(comprimento).dividedBy(0.5).ceil().toString());
+            return parseInt(new Decimal(vigas).times(comprimento).ceil().toString());
         }
         
         // Resetar calculadora de laje
